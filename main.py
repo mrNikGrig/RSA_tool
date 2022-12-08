@@ -50,10 +50,9 @@ class RSA_Tool:
                 self.arr.append(n)
                 return n
 
-
     def is_prime_number(self, n):
         self.arr.clear()
-        if n % 10 != 5:  # проятые числа оканчиваются только на эти цифры
+        if n % 10 != 5:  # простые числа оканчиваются только на эти цифры
             if n <= self.prime_numbers[-1]:  # до этого значения числа я высчитал, так что по чему бы просто не проверить их на наличие в файле
                 for i in self.prime_numbers:
                     if n < int(i):
@@ -66,7 +65,7 @@ class RSA_Tool:
                     return False  # простые числа должны быть взаимно простыми со всеми
                 if (pow(a, n - 1, n) != 1):  # сам тест
                     return False
-            #print("end of ferma test")
+            #  print("end of ferma test")
             for i in self.prime_numbers[:500]:
                 if n % int(i) == 0:  # тут я пытаюсь отсеить числа карлмайка они не простые и удолетворяют тесту ферма. написано про них здесь https://ru.wikipedia.org/wiki/%D0%A7%D0%B8%D1%81%D0%BB%D0%BE_%D0%9A%D0%B0%D1%80%D0%BC%D0%B0%D0%B9%D0%BA%D0%BB%D0%B0
                     return False
@@ -172,8 +171,8 @@ def main():
     plt.savefig('average_nums.png')
 
     print("all data for big numbers(4096bit)")
-    print("my median is ".format(numpy.mean(my_time_big_keys)))
-    print("normal median is".format(numpy.mean(normal_time_big_keys)))
+    print("my median is " + str(numpy.mean(my_time_big_keys)))
+    print("normal median is" + str(numpy.mean(normal_time_big_keys)))
     plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float))
     plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float))
     plt.show()
