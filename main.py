@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import rsa
 import numpy.random
-f = open("finalChek.txt", "r")
+
+
 
 class RSA_Tool:
     prime_numbers = []
@@ -17,6 +18,7 @@ class RSA_Tool:
     n = 0
     arr = []
     def __init__(self):
+        f = open("finalChek.txt", "r")
         for i in f:
             self.prime_numbers.append(int(i))
 
@@ -93,11 +95,13 @@ class RSA_Tool:
             if n % i == 0:
                 return i
 
+    def encrypt(self, message):
+        pass
 
 
-def main():
+def test():
     my_RSA = RSA_Tool()
-    normal_people_RSA = rsa
+    basic_rsa = rsa
 
     m = numpy.random.randint(13, 1000, 20)
     isNorm = True
@@ -111,20 +115,18 @@ def main():
     if isNorm:
         print("eee i feel good")
 
-
     my_time_small_keys = []
     normal_time_small_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
         my_RSA.get_bit_keys(256)
         t2 = time.time()
-        my_time_small_keys.append(t2-t1)
+        my_time_small_keys.append(t2 - t1)
     for i in tqdm(range(100)):
         t1 = time.time()
-        normal_people_RSA.newkeys(256)
+        basic_rsa.newkeys(256)
         t2 = time.time()
-        normal_time_small_keys.append(t2-t1)
-
+        normal_time_small_keys.append(t2 - t1)
 
     my_time_average_keys = []
     normal_time_average_keys = []
@@ -132,13 +134,12 @@ def main():
         t1 = time.time()
         my_RSA.get_bit_keys(1024)
         t2 = time.time()
-        my_time_average_keys.append(t2-t1)
+        my_time_average_keys.append(t2 - t1)
     for i in tqdm(range(100)):
         t1 = time.time()
-        normal_people_RSA.newkeys(1024)
+        basic_rsa.newkeys(1024)
         t2 = time.time()
-        normal_time_average_keys.append(t2-t1)
-
+        normal_time_average_keys.append(t2 - t1)
 
     my_time_big_keys = []
     normal_time_big_keys = []
@@ -149,7 +150,7 @@ def main():
         my_time_big_keys.append(t2 - t1)
     for i in tqdm(range(100)):
         t1 = time.time()
-        normal_people_RSA.newkeys(4096)
+        basic_rsa.newkeys(4096)
         t2 = time.time()
         normal_time_big_keys.append(t2 - t1)
 
@@ -159,26 +160,28 @@ def main():
     plt.plot(numpy.array(range(100), int), numpy.array(my_time_small_keys, float))
     plt.plot(numpy.array(range(100), int), numpy.array(normal_time_small_keys, float))
     plt.grid(True)
-    plt.show()
     plt.savefig('small_nums.png')
+    plt.show()
 
     print("all data for average numbers(1024bit)")
     print("my median is " + str(numpy.mean(my_time_average_keys)))
     print("normal median is " + str(numpy.mean(normal_time_average_keys)))
     plt.plot(numpy.array(range(100), int), numpy.array(my_time_average_keys, float))
     plt.plot(numpy.array(range(100), int), numpy.array(normal_time_average_keys, float))
-    plt.show()
     plt.savefig('average_nums.png')
+    plt.show()
 
     print("all data for big numbers(4096bit)")
     print("my median is " + str(numpy.mean(my_time_big_keys)))
     print("normal median is" + str(numpy.mean(normal_time_big_keys)))
     plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float))
     plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float))
-    plt.show()
     plt.savefig('big_nums.png')
+    plt.show()
 
 
+def main():
+    test()
 
 
 
