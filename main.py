@@ -22,9 +22,8 @@ class RSA_Tool:
         for i in f:
             self.prime_numbers.append(int(i))
 
-    def get_bit_keys(self, col_bits, e=6557):
+    def get_bit_keys(self, col_bits, e=65577):
         p = self.find_prime_number(random.randint(2 ** (col_bits // 2), 2 ** ((col_bits//2) + 1)))
-        #print('get a half')
         q = self.find_prime_number(random.randint(2 ** (col_bits // 2)-1, 2 ** ((col_bits // 2))))
         return self.gen_keys(p, q, e)
 
@@ -91,7 +90,7 @@ class RSA_Tool:
     def factorization(self, n):  # алгоритм для факторизации, это один из способов проверки числа на простоту
         if n % 2 == 0:
             print(2)
-        for i in range(3, int(math.sqrt(n)), 2):
+        for i in range(3, math.isqrt(n), 2):
             if n % i == 0:
                 return i
 
@@ -157,8 +156,11 @@ def test():
     print("all data for small numbers(256bit)")
     print("my median is " + str(numpy.mean(my_time_small_keys)))
     print("normal median is " + str(numpy.mean(normal_time_small_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_small_keys, float))
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_small_keys, float))
+    plt.plot(numpy.array(range(100), int), numpy.array(my_time_small_keys, float), label='оптимизированный подход')
+    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_small_keys, float), label='подход rsa')
+    plt.legend(prop={"size": 14})
+    plt.xlabel('итерация', fontsize=14)
+    plt.ylabel('время', fontsize=14)
     plt.grid(True)
     plt.savefig('small_nums.png')
     plt.show()
@@ -166,28 +168,30 @@ def test():
     print("all data for average numbers(1024bit)")
     print("my median is " + str(numpy.mean(my_time_average_keys)))
     print("normal median is " + str(numpy.mean(normal_time_average_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_average_keys, float))
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_average_keys, float))
+    plt.plot(numpy.array(range(100), int), numpy.array(my_time_average_keys, float), label='оптимизированный подход')
+    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_average_keys, float), label='подход rsa')
+    plt.legend(prop={"size": 14})
+    plt.xlabel('итерация', fontsize=14)
+    plt.ylabel('время', fontsize=14)
+    plt.grid(True)
     plt.savefig('average_nums.png')
     plt.show()
 
     print("all data for big numbers(4096bit)")
     print("my median is " + str(numpy.mean(my_time_big_keys)))
     print("normal median is" + str(numpy.mean(normal_time_big_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float))
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float))
+    plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float), label = 'оптримизированный подход')
+    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float), label = 'проход rsa')
+    plt.legend(prop={"size": 14})
+    plt.xlabel('итерация', fontsize=14)
+    plt.ylabel('время', fontsize=14)
+    plt.grid(True)
     plt.savefig('big_nums.png')
     plt.show()
 
 
 def main():
     test()
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
