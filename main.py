@@ -94,8 +94,19 @@ class RSA_Tool:
             if n % i == 0:
                 return i
 
-    def encrypt(self, message):
-        pass
+
+    def encrypt(self, text):
+        numKode = []
+        for i in text:
+            numKode.append(pow(ord(i), self.e, self.n))
+        return numKode
+
+    def decrypt(self, encrMessage):
+        s = ''
+        for i in encrMessage:
+            s += chr(pow(i, self.d, self.n))
+
+        return s
 
 
 def test():
