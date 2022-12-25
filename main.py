@@ -41,7 +41,7 @@ class RSA_Tool:
         return self.e, self.d, self.n
 
 
-    def rand(self, a, b):  # для теста ферма нужно, что бы числа не повторялись, тут я это проверяю
+    def rand(self, a, b):
         while True:
             n = random.randint(a, b)
             if (n in self.arr):
@@ -53,22 +53,22 @@ class RSA_Tool:
 
     def is_prime_number(self, n):
         self.arr.clear()
-        if n % 10 != 5:  # простые числа оканчиваются только на эти цифры
-            if n <= self.prime_numbers[-1]:  # до этого значения числа я высчитал, так что по чему бы просто не проверить их на наличие в файле
+        if n % 10 != 5:
+            if n <= self.prime_numbers[-1]:
                 for i in self.prime_numbers:
                     if n < int(i):
                         return False
                     elif n == int(i):
                         return True
-            for i in range(50):  # это как раз тест ферма очень хотелось бы увидеть его доказательство. 100 - это константа взятая из статьи в хабре в её правильности я не уверен
+            for i in range(50):
                 a = self.rand(5, n - 2)
-                if (math.gcd(a, n) != 1):  # ну для теста ферма числа должны быть взаимно простые
-                    return False  # простые числа должны быть взаимно простыми со всеми
-                if (pow(a, n - 1, n) != 1):  # сам тест
+                if (math.gcd(a, n) != 1):
+                    return False
+                if (pow(a, n - 1, n) != 1):
                     return False
             #  print("end of ferma test")
             for i in self.prime_numbers[:500]:
-                if n % int(i) == 0:  # тут я пытаюсь отсеить числа карлмайка они не простые и удолетворяют тесту ферма. написано про них здесь https://ru.wikipedia.org/wiki/%D0%A7%D0%B8%D1%81%D0%BB%D0%BE_%D0%9A%D0%B0%D1%80%D0%BC%D0%B0%D0%B9%D0%BA%D0%BB%D0%B0
+                if n % int(i) == 0:
                     return False
                 if int(i) > math.isqrt(n):
                     break
@@ -81,13 +81,13 @@ class RSA_Tool:
         n = n + (6 - n % 6)
         i = n
         while True:
-            if self.is_prime_number(i + 1):  # тут я иду по спиралям в которых содержатся простые числа
+            if self.is_prime_number(i + 1):
                 return i + 1
             elif self.is_prime_number(i + 5):
                 return i + 5
             i += 6
 
-    def factorization(self, n):  # алгоритм для факторизации, это один из способов проверки числа на простоту
+    def factorization(self, n):
         if n % 2 == 0:
             print(2)
         for i in range(3, math.isqrt(n), 2):
