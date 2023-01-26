@@ -28,7 +28,6 @@ class RSA_Tool:
         return self.gen_keys(p, q, e)
 
 
-
     def gen_keys(self, p, q, e):
         self.n = p * q
         f = (p - 1) * (q - 1)
@@ -95,18 +94,36 @@ class RSA_Tool:
                 return i
 
 
-    def encrypt(self, text):
-        numKode = []
-        for i in text:
-            numKode.append(pow(ord(i), self.e, self.n))
-        return numKode
+    def block_encrypt(self, m):
+        max_len_block = len(str(self.n)) - 2
+        block = ''
+        arr_blocks = []
+        for i in m:
+            str_i = str(ord(i))
+            while len(str_i) < 4:
+                str_i = '0' + str_i
+            if len(block + str_i) <= max_len_block:
+                block += str_i
+            else:
+                arr_blocks.append('1' + block)
+                block = str_i
+        arr_blocks.append('1' + block)
+        # print(*arr_blocks)
+        for i in range(len(arr_blocks)):
+            arr_blocks[i] = pow(int(arr_blocks[i]), self.e, self.n)
+        return arr_blocks
 
-    def decrypt(self, encrMessage):
+
+    def block_decrypt(self, m):
+        for i in range(len(m)):
+            m[i] = pow(int(m[i]), self.d, self.n)
         s = ''
-        for i in encrMessage:
-            s += chr(pow(i, self.d, self.n))
-
+        for i in m:
+            tmp = str(i)[1:]
+            for i in range(0, len(tmp), 4):
+                s += chr(int((tmp[i] + tmp[i + 1] + tmp[i + 2] + tmp[i + 3])))
         return s
+
 
 
 def test():
@@ -201,11 +218,20 @@ def test():
     plt.show()
 
 
+
+
 def main():
     test()
-
+    # r = RSA_Tool()
+    # r.get_bit_keys(256)
+    # m = 'я люблю вкусный чай'
+    # c = r.block_encrypt(m)
+    # m = r.block_decrypt(c)
+    # print(m)
+    
 
 if __name__ == '__main__':
     main()
+
 
 
