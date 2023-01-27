@@ -7,7 +7,6 @@ import rsa
 import numpy.random
 
 
-
 class RSA_Tool:
     prime_numbers = []
 
@@ -94,7 +93,9 @@ class RSA_Tool:
                 return i
 
 
-    def block_encrypt(self, m):
+    def block_encrypt(self, m, e = 0):
+        if e == 0:
+            e = self.e
         max_len_block = len(str(self.n)) - 2
         block = ''
         arr_blocks = []
@@ -110,13 +111,15 @@ class RSA_Tool:
         arr_blocks.append('1' + block)
         # print(*arr_blocks)
         for i in range(len(arr_blocks)):
-            arr_blocks[i] = pow(int(arr_blocks[i]), self.e, self.n)
+            arr_blocks[i] = pow(int(arr_blocks[i]), e, self.n)
         return arr_blocks
 
 
-    def block_decrypt(self, m):
+    def block_decrypt(self, m, d = 0):
+        if d == 0:
+            d = self.d
         for i in range(len(m)):
-            m[i] = pow(int(m[i]), self.d, self.n)
+            m[i] = pow(int(m[i]), d, self.n)
         s = ''
         for i in m:
             tmp = str(i)[1:]
@@ -228,10 +231,7 @@ def main():
     # c = r.block_encrypt(m)
     # m = r.block_decrypt(c)
     # print(m)
-    
+
 
 if __name__ == '__main__':
     main()
-
-
-
