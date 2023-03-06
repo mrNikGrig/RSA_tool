@@ -1,9 +1,9 @@
 import time
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import rsa
 import numpy.random
 import RSA_tool as my_RSA
+import rsa
 
 
 def test():
@@ -13,7 +13,7 @@ def test():
     isNorm = True
     for i in m:
         i = int(i)
-        e, d, n = my_RSA.get_bit_keys(256)
+        e, d, n = my_RSA.RSA.get_bit_keys(256)
         if (pow(pow(i, e, n), d, n)) != i:
             print("error")
             isNorm = False
@@ -25,7 +25,7 @@ def test():
     normal_time_small_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(256)
+        my_RSA.RSA.get_bit_keys(256)
         t2 = time.time()
         my_time_small_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -38,7 +38,7 @@ def test():
     normal_time_average_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(1024)
+        my_RSA.RSA.get_bit_keys(1024)
         t2 = time.time()
         my_time_average_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -51,7 +51,7 @@ def test():
     normal_time_big_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(4096)
+        my_RSA.RSA.get_bit_keys(4096)
         t2 = time.time()
         my_time_big_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -98,12 +98,18 @@ def test():
 
 
 def main():
-    test()
-    # e, d, n = my_RSA.get_bit_keys(256)
-    # m = 'я люблю вкусный чай'
-    # c = my_RSA.block_encrypt(m, e, n)
-    # m = my_RSA.block_decrypt(c, d, n)
-    # print(m)
+    # rsa.newkeys()
+    e, d, n = my_RSA.RSA.get_bit_keys(1024)
+    m = 'hello world'
+    print(n)
+    c = my_RSA.RSA.block_encrypt(m, e, n)
+    print(c)
+    m = my_RSA.RSA.block_decrypt(c, d, n)
+    print(m)
+    # test()
+
+
+
 
 
 if __name__ == '__main__':
