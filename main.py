@@ -1,143 +1,19 @@
-import random
 import time
-import math
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import rsa
 import numpy.random
-
-
-class RSA_Tool:
-    prime_numbers = []
-
-    p = 0
-    q = 0
-    e = 0
-    d = 0
-    n = 0
-    arr = []
-    def __init__(self):
-        f = open("finalChek.txt", "r")
-        for i in f:
-            self.prime_numbers.append(int(i))
-
-    def get_bit_keys(self, col_bits, e=65577):
-        p = self.find_prime_number(random.randint(2 ** (col_bits // 2), 2 ** ((col_bits//2) + 1)))
-        q = self.find_prime_number(random.randint(2 ** (col_bits // 2)-1, 2 ** ((col_bits // 2))))
-        return self.gen_keys(p, q, e)
-
-
-    def gen_keys(self, p, q, e):
-        self.n = p * q
-        f = (p - 1) * (q - 1)
-        while math.gcd(e, f) != 1:
-            e += 2
-            if e > f:
-                print("error")
-        self.d = pow(e, -1, f)
-        self.e = e
-        return self.e, self.d, self.n
-
-
-    def rand(self, a, b):
-        while True:
-            n = random.randint(a, b)
-            if (n in self.arr):
-                pass
-                #print("тык")
-            else:
-                self.arr.append(n)
-                return n
-
-    def is_prime_number(self, n):
-        self.arr.clear()
-        if n % 10 != 5:
-            if n <= self.prime_numbers[-1]:
-                for i in self.prime_numbers:
-                    if n < int(i):
-                        return False
-                    elif n == int(i):
-                        return True
-            for i in range(50):
-                a = self.rand(5, n - 2)
-                if (math.gcd(a, n) != 1):
-                    return False
-                if (pow(a, n - 1, n) != 1):
-                    return False
-            #  print("end of ferma test")
-            for i in self.prime_numbers[:500]:
-                if n % int(i) == 0:
-                    return False
-                if int(i) > math.isqrt(n):
-                    break
-            return True
-        else:
-            return False
-
-
-    def find_prime_number(self, n):
-        n = n + (6 - n % 6)
-        i = n
-        while True:
-            if self.is_prime_number(i + 1):
-                return i + 1
-            elif self.is_prime_number(i + 5):
-                return i + 5
-            i += 6
-
-    def factorization(self, n):
-        if n % 2 == 0:
-            print(2)
-        for i in range(3, math.isqrt(n), 2):
-            if n % i == 0:
-                return i
-
-
-    def block_encrypt(self, m, e = 0):
-        if e == 0:
-            e = self.e
-        max_len_block = len(str(self.n)) - 2
-        block = ''
-        arr_blocks = []
-        for i in m:
-            str_i = str(ord(i))
-            while len(str_i) < 4:
-                str_i = '0' + str_i
-            if len(block + str_i) <= max_len_block:
-                block += str_i
-            else:
-                arr_blocks.append('1' + block)
-                block = str_i
-        arr_blocks.append('1' + block)
-        # print(*arr_blocks)
-        for i in range(len(arr_blocks)):
-            arr_blocks[i] = pow(int(arr_blocks[i]), e, self.n)
-        return arr_blocks
-
-
-    def block_decrypt(self, m, d = 0):
-        if d == 0:
-            d = self.d
-        for i in range(len(m)):
-            m[i] = pow(int(m[i]), d, self.n)
-        s = ''
-        for i in m:
-            tmp = str(i)[1:]
-            for i in range(0, len(tmp), 4):
-                s += chr(int((tmp[i] + tmp[i + 1] + tmp[i + 2] + tmp[i + 3])))
-        return s
-
+import RSA_tool as my_RSA
+import rsa
 
 
 def test():
-    my_RSA = RSA_Tool()
     basic_rsa = rsa
 
     m = numpy.random.randint(13, 1000, 20)
     isNorm = True
     for i in m:
         i = int(i)
-        e, d, n = my_RSA.get_bit_keys(256)
+        e, d, n = my_RSA.RSA.get_bit_keys(256)
         if (pow(pow(i, e, n), d, n)) != i:
             print("error")
             isNorm = False
@@ -149,7 +25,7 @@ def test():
     normal_time_small_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(256)
+        my_RSA.RSA.get_bit_keys(256)
         t2 = time.time()
         my_time_small_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -162,7 +38,7 @@ def test():
     normal_time_average_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(1024)
+        my_RSA.RSA.get_bit_keys(1024)
         t2 = time.time()
         my_time_average_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -175,7 +51,7 @@ def test():
     normal_time_big_keys = []
     for i in tqdm(range(100)):
         t1 = time.time()
-        my_RSA.get_bit_keys(4096)
+        my_RSA.RSA.get_bit_keys(4096)
         t2 = time.time()
         my_time_big_keys.append(t2 - t1)
     for i in tqdm(range(100)):
@@ -187,11 +63,11 @@ def test():
     print("all data for small numbers(256bit)")
     print("my median is " + str(numpy.mean(my_time_small_keys)))
     print("normal median is " + str(numpy.mean(normal_time_small_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_small_keys, float), label='оптимизированный подход')
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_small_keys, float), label='подход rsa')
+    plt.plot(numpy.array(range(100)), numpy.array(my_time_small_keys, float), label='предложенный подход')
+    plt.plot(numpy.array(range(100)), numpy.array(normal_time_small_keys, float), label='стандартный подход')
     plt.legend(prop={"size": 14})
     plt.xlabel('итерация', fontsize=14)
-    plt.ylabel('время', fontsize=14)
+    plt.ylabel('время, с', fontsize=14)
     plt.grid(True)
     plt.savefig('small_nums.png')
     plt.show()
@@ -199,11 +75,11 @@ def test():
     print("all data for average numbers(1024bit)")
     print("my median is " + str(numpy.mean(my_time_average_keys)))
     print("normal median is " + str(numpy.mean(normal_time_average_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_average_keys, float), label='оптимизированный подход')
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_average_keys, float), label='подход rsa')
+    plt.plot(numpy.array(range(100), int), numpy.array(my_time_average_keys, float), label='предложенный подход')
+    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_average_keys, float), label='стандартный подход')
     plt.legend(prop={"size": 14})
     plt.xlabel('итерация', fontsize=14)
-    plt.ylabel('время', fontsize=14)
+    plt.ylabel('время, с', fontsize=14)
     plt.grid(True)
     plt.savefig('average_nums.png')
     plt.show()
@@ -211,26 +87,28 @@ def test():
     print("all data for big numbers(4096bit)")
     print("my median is " + str(numpy.mean(my_time_big_keys)))
     print("normal median is" + str(numpy.mean(normal_time_big_keys)))
-    plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float), label = 'оптримизированный подход')
-    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float), label = 'проход rsa')
+    plt.plot(numpy.array(range(100), int), numpy.array(my_time_big_keys, float), label='предложенный подход')
+    plt.plot(numpy.array(range(100), int), numpy.array(normal_time_big_keys, float), label='стандартный подход')
     plt.legend(prop={"size": 14})
     plt.xlabel('итерация', fontsize=14)
-    plt.ylabel('время', fontsize=14)
+    plt.ylabel('время, с', fontsize=14)
     plt.grid(True)
     plt.savefig('big_nums.png')
     plt.show()
 
 
-
-
 def main():
-    test()
-    # r = RSA_Tool()
-    # r.get_bit_keys(256)
-    # m = 'я люблю вкусный чай'
-    # c = r.block_encrypt(m)
-    # m = r.block_decrypt(c)
-    # print(m)
+    e, d, n = my_RSA.RSA.get_bit_keys(1024)
+    m = 'hello world'
+    print(n)
+    c = my_RSA.RSA.block_encrypt(m, e, n)
+    print(c)
+    m = my_RSA.RSA.block_decrypt(c, d, n)
+    print(m)
+    # test()
+
+
+
 
 
 if __name__ == '__main__':
